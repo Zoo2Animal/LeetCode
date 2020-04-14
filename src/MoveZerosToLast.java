@@ -12,7 +12,8 @@ public class MoveZerosToLast {
 
     public static void main(String[] args) {
         int[] arr = new int[]{0, 1, 0, 3, 12};
-        moveZero2(arr);
+        arr = new int[]{1};
+        moveZero3(arr);
         printArr(arr);
     }
 
@@ -40,6 +41,7 @@ public class MoveZerosToLast {
     }
 
     /**
+     * TODO 完全掌握了快速排序后再回来写一遍
      * 遍历一次，使用快速排序的思想，pivot是0，将所有不等于0的元素移动到左边
      * leftIndex记录的是下一个不为0的元素的下标，这样会将所有不为0的元素交换到左边，被交换到右边的都是0
      */
@@ -51,6 +53,21 @@ public class MoveZerosToLast {
                 int temp = nums[leftIndex];
                 nums[leftIndex] = nums[i];
                 nums[i] = temp;
+                leftIndex++;
+            }
+        }
+    }
+
+    /**
+     * 更风骚的写法(有bug)
+     *
+     * @param nums
+     */
+    private static void moveZero3(int[] nums) {
+        int leftIndex = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                nums[leftIndex] = (nums[i] ^= nums[leftIndex] ^= nums[i]) ^ nums[leftIndex];
                 leftIndex++;
             }
         }
