@@ -15,7 +15,7 @@ public class RotateArray {
         int[] nums = new int[]{1, 2, 3, 4, 5, 6, 7};
         int k = 3;
 
-        rotate(nums, k);
+        rotate2(nums, k);
         printArr(nums);
     }
 
@@ -34,8 +34,24 @@ public class RotateArray {
             }
             nums[0] = first;
         }
-
     }
+
+    /**
+     * 使用额外的数组
+     * 向右移动k个位置，那么移动后的元素的位置就是(i+k)%length
+     */
+    public static void rotate2(int[] nums, int k) {
+        int[] temps = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            int newIndex = (i + k) % nums.length;
+            temps[newIndex] = nums[i];
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = temps[i];
+        }
+    }
+
 
     private static void printArr(int[] arr) {
         for (int i : arr) {

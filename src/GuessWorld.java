@@ -39,40 +39,73 @@ public class GuessWorld {
         GuessWorld guessWorld = new GuessWorld();
 
 
-        String secret = "1123";
-        String guess = "0111";
+        String secret = "18";
+        String guess = "78";
 
         String hint = guessWorld.getHint(secret, guess);
         System.out.println(hint);
     }
 
-    //用一个map存储，然后判断是否包含，包含就对比位置
+    /*
+        Time complexity: O(n)
+        Space complexity: O(1)
+     */
     public String getHint(String secret, String guess) {
-        StringBuilder stringBuilder = new StringBuilder();
+        int aCount = 0;     // 公牛数
+        int bCount = 0;     // 母牛数
+        //int mapS[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        //int mapG[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int[] mapS = new int[10];
+        int[] mapG = new int[10];
 
-        int a = 0;
-        int b = 0;
-
-        //存储在map
-        HashMap<Integer, Character> hashMap = new HashMap<>();
-        int length = secret.length();
-        for (int i = 0; i < length; i++) {
-            hashMap.put(i, secret.charAt(i));
-        }
-
-        //对比
-        for (int i = 0; i < length; i++) {
-            char temp = guess.charAt(i);
-            if (hashMap.containsValue(temp)) {
-                b++;
-                if (hashMap.get(i) == temp) {
-                    a++;
-                    b--;
-                }
+        for (int i = 0; i < secret.length(); i++) {
+            char temp = secret.charAt(i);
+            if (temp == guess.charAt(i))
+                aCount++;
+            else {
+                mapS[temp - '0']++;
+                mapG[guess.charAt(i) - '0']++;
             }
         }
+        for (int i = 0; i < 10; i++) {
+            bCount += Math.min(mapG[i], mapS[i]);
+        }
+        return aCount + "A" + bCount + "B";
+    }
 
-        return stringBuilder.append(a).append("A").append(b).append("B").toString();
+    /**
+     * Splendid
+     *
+     * @param secret 实际world
+     * @param guess  猜测的world
+     * @return
+     */
+    public String getHint2(String secret, String guess) {
+        //数字只能是0-1，用一个length1=0的数组就ok，下标表示数字，值表示没猜中的次数
+        int[] bucket = new int[10];
+        int bull = 0;
+        int cow = 0;
+        for (int i = 0; i < secret.length(); i++) {
+            if (secret.charAt(i) == guess.charAt(i)) {
+                bull++;
+                continue;
+            }
 
+            //假设没猜中，这个数字的次数+1
+            bucket[secret.charAt(i) - '0'] += 1;
+            //假设猜中，这个数字的次数-1
+            bucket[guess.charAt(i) - '0'] -= 1;
+
+        }
+        //计算bucket中正值的个数，就是没猜中的个数
+        for (int i = 0; i < 10; i++) {
+            if (bucket[i] > 0)
+                cow += bucket[i];
+        }
+
+        //length-bull就是没猜对的个数，减去没猜中的个数就是猜中的个数
+        cow = secret.length() - bull - cow;
+        String res = bull + "A" + cow + "B";
+        return res;
     }
 }
